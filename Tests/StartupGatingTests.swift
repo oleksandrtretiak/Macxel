@@ -78,7 +78,7 @@ enum StartupGatingTests {
 
     private static func testCommandBarShortcuts(_ suite: TestSuite) {
         typealias Fixture = UninstallerCommandBarCleanupTests
-        let domain = "com.vorssaint.tests.command-bar-startup.\(UUID())"
+        let domain = "com.oleksandrtretiak.macxel.tests.command-bar-startup.\(UUID())"
         let defaults = UserDefaults(suiteName: domain)!
         Fixture.Preferences.standard = defaults
         defer {

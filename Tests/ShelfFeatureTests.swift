@@ -217,7 +217,7 @@ enum ShelfFeatureTests {
             NSPasteboard.PasteboardType.string.rawValue),
                "plain text still counts as droppable shelf content")
         suite.expect(!ShelfPasteboardSupport.isDroppablePasteboardType(
-            "com.vorssaint.tests.not-a-real-pasteboard-type"),
+            "com.oleksandrtretiak.macxel.tests.not-a-real-pasteboard-type"),
                "unrelated pasteboard types do not activate the shelf")
         ShelfFilePromiseTests.run(suite)
         ShelfDropRoutingTests.run(suite)
@@ -497,7 +497,7 @@ enum ShelfFeatureTests {
 
         // MARK: Shelf dock placement
 
-        let placementDomain = "com.vorssaint.tests.shelf-dock-placement"
+        let placementDomain = "com.oleksandrtretiak.macxel.tests.shelf-dock-placement"
         let placementDefaults = UserDefaults(suiteName: placementDomain)!
         placementDefaults.removePersistentDomain(forName: placementDomain)
         defer { placementDefaults.removePersistentDomain(forName: placementDomain) }

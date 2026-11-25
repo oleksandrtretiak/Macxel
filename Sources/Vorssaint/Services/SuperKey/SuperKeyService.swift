@@ -108,7 +108,7 @@ final class SuperKeyService: ObservableObject {
     private var exceptionObservation: AnyCancellable?
     /// The mapping is written off the main thread, and in the order it was
     /// asked for: a queue of one keeps an apply and a clear from crossing.
-    private let mappingQueue = DispatchQueue(label: "com.vorssaint.utils.superkey-mapping")
+    private let mappingQueue = DispatchQueue(label: "com.oleksandrtretiak.macxel.superkey-mapping")
     /// Lives only while the mapping is owned and clears it if this process is
     /// killed before applicationWillTerminate can run.
     private var mappingGuard: SuperKeyMappingGuard.Handle?
@@ -235,7 +235,7 @@ final class SuperKeyService: ObservableObject {
             shouldStopTapThread = false
             pendingTapRestart = false
             let thread = Thread { [weak self] in self?.runEventTap() }
-            thread.name = "Vorssaint Super Key"
+            thread.name = "Macxel Super Key"
             thread.qualityOfService = .userInteractive
             tapThread = thread
             return thread

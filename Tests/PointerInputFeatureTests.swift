@@ -488,7 +488,7 @@ enum PointerInputFeatureTests {
                "launch, termination and mounted-volume changes refresh registered web handlers")
         suite.expect(MouseNavigationSupport.shouldRefreshWebHandlers(
             isApplicationActivation: true, activatedPID: 41, ownPID: 41),
-               "activating Vorssaint refreshes registered web handlers")
+               "activating Macxel refreshes registered web handlers")
         suite.expect(!MouseNavigationSupport.shouldRefreshWebHandlers(
             isApplicationActivation: true, activatedPID: 42, ownPID: 41),
                "activating another app does not repeat the handler lookup")
@@ -769,7 +769,7 @@ enum PointerInputFeatureTests {
                                                              stringFor: { _ in nil })
         suite.expect(!uninstalledInverter.invertVertical && !uninstalledInverter.invertHorizontal,
                "an uninstalled inverter flips nothing even with its switches left on")
-        let linearName = "com.vorssaint.tests.linear-lines.\(UUID().uuidString)"
+        let linearName = "com.oleksandrtretiak.macxel.tests.linear-lines.\(UUID().uuidString)"
         let linearDefaults = UserDefaults(suiteName: linearName)!
         defer { linearDefaults.removePersistentDomain(forName: linearName) }
         var exceptionChecks = 0
@@ -2605,13 +2605,13 @@ enum PointerInputFeatureTests {
                 ),
                "a stop or replaced event tap invalidates a queued Super key mapping")
         suite.expect(SuperKeyMappingGuard.cleanupSource(in: [
-            "Vorssaint", SuperKeyMappingGuard.cleanupArgument, "capsLock",
+            "Macxel", SuperKeyMappingGuard.cleanupArgument, "capsLock",
         ]) == .capsLock
                 && SuperKeyMappingGuard.cleanupSource(in: [
-                    "Vorssaint", SuperKeyMappingGuard.cleanupArgument, "rightCommand",
+                    "Macxel", SuperKeyMappingGuard.cleanupArgument, "rightCommand",
                 ]) == .rightCommand
                 && SuperKeyMappingGuard.cleanupSource(in: [
-                    "Vorssaint", SuperKeyMappingGuard.cleanupArgument, "invalid",
+                    "Macxel", SuperKeyMappingGuard.cleanupArgument, "invalid",
                 ]) == nil,
                "the crash guard accepts only a real Super key source")
 
@@ -4100,7 +4100,7 @@ enum PointerInputFeatureTests {
         suite.expect(!QuitProtectionSupport.opensNativeSwitcher(keyCode: 48, flags: .maskCommand, entries: [
                     LiveSystemShortcut(id: 1, shortcut: commandTab, enabled: false),
                 ]),
-               "⌘Tab with the system row off, as the App Switcher's take-over leaves it, opens Vorssaint's switcher only")
+               "⌘Tab with the system row off, as the App Switcher's take-over leaves it, opens Macxel's switcher only")
         suite.expect(QuitProtectionSupport.opensNativeSwitcher(keyCode: 50, flags: .maskCommand, entries: [
                     LiveSystemShortcut(id: 1, shortcut: GlobalShortcut(keyCode: 50, modifiers: [.command]),
                                        enabled: true),

@@ -144,7 +144,7 @@ enum ScreenshotSupport {
         let hideVorssaintWindows: Bool
         /// Whether editors and pinned captures stay out of the picture and the
         /// pickable windows. Recording keeps them out even while "Hide
-        /// Vorssaint windows" is off, which that flag alone cannot tell apart.
+        /// Macxel windows" is off, which that flag alone cannot tell apart.
         let keepsContentWindowsOut: Bool
         let usesGeometry: Bool
 

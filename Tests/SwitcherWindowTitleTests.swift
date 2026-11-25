@@ -84,7 +84,7 @@ enum SwitcherWindowTitleTests {
                                            isOnScreen: true, isMinimized: false, isFullscreen: false, frame: .zero)
         var renamed = document
         renamed.title = "Budget"
-        let ownWindow = SwitcherItem.window(id: 8, title: "Settings", appName: "Vorssaint",
+        let ownWindow = SwitcherItem.window(id: 8, title: "Settings", appName: "Macxel",
                                             pid: ProcessInfo.processInfo.processIdentifier, isOnScreen: true,
                                             isMinimized: false, isFullscreen: false, frame: .zero)
         let windowless = SwitcherItem.appOnly(appName: "Finder", pid: 20)

@@ -25,10 +25,10 @@
             }
           ],
           "hidden" : false,
-          "image-name" : "vorssaint-brandmark.svg",
-          "name" : "BrandMark-D7-SVG",
+          "image-name" : "macxel-mark.svg",
+          "name" : "Macxel-Mark",
           "position" : {
-            "scale" : 1.25,
+            "scale" : 1.05,
             "translation-in-points" : [
               2.2516667286254233e-05,
               3.9609225268577575e-06

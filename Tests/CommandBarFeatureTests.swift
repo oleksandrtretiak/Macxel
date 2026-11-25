@@ -2622,7 +2622,7 @@ enum CommandBarFeatureTests {
         suite.expect(CommandBarLinks.trailingArgument(query: "gh vorssaint utils", name: "gh")
                 == "vorssaint utils",
                "what comes after the name is what the saved search opens with")
-        suite.expect(CommandBarLinks.trailingArgument(query: "GH Vorssaint", name: "gh") == "Vorssaint",
+        suite.expect(CommandBarLinks.trailingArgument(query: "GH Macxel", name: "gh") == "Macxel",
                "the name is matched without case; the argument keeps its own")
         suite.expect(CommandBarLinks.trailingArgument(query: "ghost writer", name: "gh") == nil
                 && CommandBarLinks.trailingArgument(query: "gh", name: "gh") == nil,
@@ -3062,7 +3062,7 @@ enum CommandBarFeatureTests {
                 && editedCompletion == nil,
                "Tab remembers the fuzzy search unless the completed field is edited")
 
-        let learningDefaultsName = "com.vorssaint.tests.command-bar-learning"
+        let learningDefaultsName = "com.oleksandrtretiak.macxel.tests.command-bar-learning"
         let learningDefaults = UserDefaults(suiteName: learningDefaultsName)!
         learningDefaults.removePersistentDomain(forName: learningDefaultsName)
         let firstInstallationKey = CommandBarLearning.installationKey(in: learningDefaults)

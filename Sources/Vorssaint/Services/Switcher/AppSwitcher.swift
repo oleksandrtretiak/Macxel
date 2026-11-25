@@ -109,7 +109,7 @@ final class AppSwitcher: ObservableObject {
         var removals: Set<SwitcherWindowInventory.Removal> = []
         var environmentStillCurrent: (() -> Bool)?
     }
-    private let frontAppReadQueue = DispatchQueue(label: "com.vorssaint.switcher.front-app", qos: .userInitiated)
+    private let frontAppReadQueue = DispatchQueue(label: "com.oleksandrtretiak.macxel.switcher.front-app", qos: .userInitiated)
     private var sessionOrigin: SessionOrigin?
 
     // The tap lives on a dedicated thread: an active keyDown tap makes the
@@ -463,7 +463,7 @@ final class AppSwitcher: ObservableObject {
             let thread = Thread { [weak self] in
                 self?.runEventTap()
             }
-            thread.name = "Vorssaint Switcher"
+            thread.name = "Macxel Switcher"
             thread.qualityOfService = .userInteractive
             tapThread = thread
             return thread

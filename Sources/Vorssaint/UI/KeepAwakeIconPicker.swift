@@ -98,7 +98,7 @@ struct KeepAwakeIconPicker: View {
         .accessibilityLabel(title(icon))
     }
 
-    /// The Vorssaint choice draws whatever the menu bar shows, which can be a
+    /// The Macxel choice draws whatever the menu bar shows, which can be a
     /// symbol chosen in the menu bar settings.
     private func title(_ icon: KeepAwakeActiveIcon) -> String {
         guard icon == .vorssaint,

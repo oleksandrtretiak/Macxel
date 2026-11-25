@@ -34,7 +34,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSW
     private var panelPresentationSerial = 0
     private var panelPresentationObservers: [NSObjectProtocol] = []
     /// The app to hand activation back to when the panel is dismissed, so
-    /// Vorssaint does not stay in front. Captured when a click opens the panel
+    /// Macxel does not stay in front. Captured when a click opens the panel
     /// and kept current by the observers below while the panel is shown.
     private var panelActivationSource: NSRunningApplication?
 
@@ -1493,7 +1493,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSW
         endPanelActivationTracking()
         let ownPID = NSRunningApplication.current.processIdentifier
         let front = NSWorkspace.shared.frontmostApplication
-        // Opened while Vorssaint was already in front (from Settings, say):
+        // Opened while Macxel was already in front (from Settings, say):
         // there is nothing to hand back when the panel closes.
         panelActivationSource = front?.processIdentifier == ownPID ? nil : front
         let center = NSWorkspace.shared.notificationCenter
@@ -1529,7 +1529,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSW
         return source
     }
 
-    /// Closing the panel leaves Vorssaint active, and macOS keeps reporting it
+    /// Closing the panel leaves Macxel active, and macOS keeps reporting it
     /// as the frontmost app until something else is focused, which misleads
     /// window managers and anything that follows the active app.
     private func returnActivation(to source: NSRunningApplication?, after closeReason: PanelCloseReason?) {
@@ -1833,7 +1833,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSW
         editMenu.addItem(NSMenuItem(title: strings.menuPaste, action: #selector(NSText.paste(_:)), keyEquivalent: "v"))
         editMenu.addItem(NSMenuItem(title: strings.menuSelectAll, action: #selector(NSText.selectAll(_:)), keyEquivalent: "a"))
 
-        // Drivers and other running copies of Vorssaint may translate side buttons
+        // Drivers and other running copies of Macxel may translate side buttons
         // into menu commands before this process ever receives a raw mouse event.
         let navigationMenuItem = NSMenuItem()
         navigationMenuItem.submenu = SettingsWindow.navigationMenu(language: L10n.shared.language)

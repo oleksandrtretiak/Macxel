@@ -9,7 +9,7 @@ import Carbon.HIToolbox
 enum NotchDestinationContract {
     enum ReviewDefaults { static var current: UserDefaults! }
     enum NotchContentTransition { case none, reveal, replace }
-    /// Like AppKit while Vorssaint stays active, makeKey and resignKey leave
+    /// Like AppKit while Macxel stays active, makeKey and resignKey leave
     /// the app's key window as it was; tests set that record by hand.
     final class Panel {
         var isKeyWindow = true
@@ -142,7 +142,7 @@ enum NotchDestinationContract {
     }
 
     static func run(_ suite: TestSuite) {
-        let domain = "com.vorssaint.tests.notch-destinations"
+        let domain = "com.oleksandrtretiak.macxel.tests.notch-destinations"
         let defaults = UserDefaults(suiteName: domain)!
         defaults.removePersistentDomain(forName: domain)
         ReviewDefaults.current = defaults
@@ -394,7 +394,7 @@ enum NotchDestinationContract {
     }
 
     /// The island resigns by hand while it stays on screen. The keyboard goes
-    /// back to a regular Vorssaint window only while Vorssaint is in front.
+    /// back to a regular Macxel window only while Macxel is in front.
     private static func keyHandoffContracts(suite: TestSuite) {
         let vorssaint = RunningApplication(processIdentifier: ProcessInfo.processInfo.processIdentifier)
         /// Returns the windows that were made key, front to back.
@@ -426,7 +426,7 @@ enum NotchDestinationContract {
             return named.flatMap { name, window in Array(repeating: name, count: window.keyRequests) }
         }
         suite.expect(handoff(frontmost: vorssaint) == ["settings"],
-                     "closing the island hands the keyboard back to Settings while Vorssaint stays active")
+                     "closing the island hands the keyboard back to Settings while Macxel stays active")
         suite.expect(handoff(frontmost: vorssaint, otherSpaceInFront: true, regularBehind: true) == ["settings"],
                      "closing the island hands the keyboard to the frontmost regular window on this Space")
         suite.expect(handoff(frontmost: RunningApplication(processIdentifier: 1)).isEmpty,
@@ -449,7 +449,7 @@ enum NotchDestinationContract {
         suite.expect(service.showScratchpad(toggle: true) && !service.expanded,
                      "the shortcut closes a Scratchpad that already owns the keyboard")
         keyHandoffContracts(suite: suite)
-        // While Vorssaint stays the active app, collapse() resigns by hand: the
+        // While Macxel stays the active app, collapse() resigns by hand: the
         // flag clears, AppKit keeps the island key, and makeKey changes neither.
         NSApp.keyWindow = service.panel
         service.panel?.isKeyWindow = false

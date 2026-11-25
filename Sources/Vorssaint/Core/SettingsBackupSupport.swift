@@ -12,7 +12,7 @@ enum SettingsBackupSupport {
     static let settingsKey = "settings"
     static let formatVersion = 1
 
-    /// `Vorssaint --export-settings FILE` and `Vorssaint --import-settings FILE`
+    /// `Macxel --export-settings FILE` and `Macxel --import-settings FILE`
     /// write and apply the same file as the buttons in Advanced settings.
     enum Command: Equatable {
         case export(path: String)
@@ -316,7 +316,7 @@ enum SettingsBackupSupport {
         return result
     }
 
-    /// An optional settings file the app reads at launch (issue #497): `$XDG_CONFIG_HOME/vorssaint/settings.plist`, or
+    /// An optional settings file the app reads at launch (issue #497): `$XDG_CONFIG_HOME/macxel/settings.plist`, or
     /// `~/.config` in its place when the variable is unset, empty or relative,
     /// as the XDG spec asks. The Developer build reads its own folder.
     static func configFileURL(environment: [String: String],
@@ -326,7 +326,7 @@ enum SettingsBackupSupport {
         if let xdg = environment["XDG_CONFIG_HOME"], xdg.hasPrefix("/") {
             base = URL(fileURLWithPath: xdg, isDirectory: true)
         }
-        var folder = "vorssaint"
+        var folder = "macxel"
         if isDeveloperBuild {
             folder += "-dev"
         }

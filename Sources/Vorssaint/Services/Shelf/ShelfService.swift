@@ -250,7 +250,7 @@ final class ShelfService: ObservableObject {
     private var promiseTransfers: [UUID: (target: UUID?, transfer: ShelfFilePromiseTransfer, additions: [Item])] = [:]
 
     private let tempDir: URL = {
-        let id = Bundle.main.bundleIdentifier ?? "com.vorssaint.utils"
+        let id = Bundle.main.bundleIdentifier ?? "com.oleksandrtretiak.macxel"
         let dir = FileManager.default.temporaryDirectory
             .appendingPathComponent("VorssaintShelf", isDirectory: true)
             .appendingPathComponent(id, isDirectory: true)
@@ -268,12 +268,12 @@ final class ShelfService: ObservableObject {
     /// Writes coalesce per mutation cycle already; the JSON encode itself
     /// also stays off the main thread (a full shelf of large texts is real
     /// work), serialized so blobs land in mutation order.
-    private static let persistQueue = DispatchQueue(label: "com.vorssaint.utils.shelf-persist",
+    private static let persistQueue = DispatchQueue(label: "com.oleksandrtretiak.macxel.shelf-persist",
                                                     qos: .utility)
 
     // File providers may block for seconds. Keep all drag metadata reads off
     // the main thread and bound the number of outstanding reads on slow volumes.
-    private static let dragFileQueue = DispatchQueue(label: "com.vorssaint.utils.shelf-drag-files",
+    private static let dragFileQueue = DispatchQueue(label: "com.oleksandrtretiak.macxel.shelf-drag-files",
                                                      qos: .userInitiated)
 
     private var persistScheduled = false

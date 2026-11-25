@@ -70,7 +70,7 @@ final class ScreenshotService: ObservableObject {
         return ids
     }
 
-    /// Ordinary windows somebody left on screen, which the "Hide Vorssaint
+    /// Ordinary windows somebody left on screen, which the "Hide Macxel
     /// windows" preference owns.
     private var contentWindowIDs: Set<CGWindowID> {
         var ids: Set<CGWindowID> = []
@@ -831,7 +831,7 @@ final class ScreenshotService: ObservableObject {
     }
 
     /// The shelf gets a copy of its own, not the file a Save wrote, which can
-    /// later be deleted or moved to the Trash outside Vorssaint. A saved
+    /// later be deleted or moved to the Trash outside Macxel. A saved
     /// capture lends its bytes and name, so nothing is encoded twice. Any
     /// other is encoded off the main thread. Each capture owns its task so
     /// taking another capture cannot lose one still being prepared. Quiet on
@@ -1108,7 +1108,7 @@ final class ScreenshotService: ObservableObject {
 /// without holding a full-resolution screenshot in memory while the app rests.
 enum ScreenshotLastCaptureStore {
     private static let writeQueue = DispatchQueue(
-        label: "com.vorssaint.utils.latest-screenshot",
+        label: "com.oleksandrtretiak.macxel.latest-screenshot",
         qos: .utility)
     private static let stateLock = NSLock()
     private static var generation = 0

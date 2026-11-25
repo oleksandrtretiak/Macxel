@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="576" height="320" viewBox="0 0 576 320">
+  <rect x="4.48" y="4.48" width="55.04" height="55.04" rx="14.08" fill="#000000"/>
+  <rect x="516.48" y="4.48" width="55.04" height="55.04" rx="14.08" fill="#000000"/>
+  <rect x="4.48" y="68.48" width="55.04" height="55.04" rx="14.08" fill="#000000"/>
+  <rect x="68.48" y="68.48" width="55.04" height="55.04" rx="14.08" fill="#000000"/>
+  <rect x="452.48" y="68.48" width="55.04" height="55.04" rx="14.08" fill="#000000"/>
+  <rect x="516.48" y="68.48" width="55.04" height="55.04" rx="14.08" fill="#000000"/>
+  <rect x="4.48" y="132.48" width="55.04" height="55.04" rx="14.08" fill="#000000"/>
+  <rect x="132.48" y="132.48" width="55.04" height="55.04" rx="14.08" fill="#000000"/>
+  <rect x="388.48" y="132.48" width="55.04" height="55.04" rx="14.08" fill="#000000"/>
+  <rect x="516.48" y="132.48" width="55.04" height="55.04" rx="14.08" fill="#000000"/>
+  <rect x="4.48" y="196.48" width="55.04" height="55.04" rx="14.08" fill="#000000"/>
+  <rect x="196.48" y="196.48" width="55.04" height="55.04" rx="14.08" fill="#000000"/>
+  <rect x="324.48" y="196.48" width="55.04" height="55.04" rx="14.08" fill="#000000"/>
+  <rect x="516.48" y="196.48" width="55.04" height="55.04" rx="14.08" fill="#000000"/>
+  <rect x="4.48" y="260.48" width="55.04" height="55.04" rx="14.08" fill="#000000"/>
+  <rect x="260.48" y="260.48" width="55.04" height="55.04" rx="14.08" fill="#000000"/>
+  <rect x="516.48" y="260.48" width="55.04" height="55.04" rx="14.08" fill="#000000"/>
+</svg>

@@ -244,7 +244,7 @@ private struct UpdateSupportContent: View {
                 .controlSize(.large)
 
                 Button {
-                    openURL(AppInfo.repositoryURL)
+                    openURL(AppInfo.upstreamRepositoryURL)
                 } label: {
                     Label(l10n.s.supportIntroStarHint, systemImage: "star")
                         .font(.caption)

@@ -53,7 +53,7 @@ enum SwitcherExclusiveFullscreenTests {
             suite.expect(raises([exclusive], frontmost: 200) == false,
                          "only the frontmost app's window counts")
             suite.expect(raises([window(1, pid: own, layer: shielding, bounds: display)], frontmost: own) == false,
-                         "Vorssaint's own overlays never hand the keys back")
+                         "Macxel's own overlays never hand the keys back")
 
             let duringDisplayChange = [
                 raises([exclusive]), raises(nil), raises([exclusive], frontmost: nil),

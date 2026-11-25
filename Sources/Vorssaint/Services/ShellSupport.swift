@@ -26,7 +26,7 @@ enum Shell {
 
 /// Runs a command with administrator privileges (system password prompt).
 enum AdminShell {
-    // Vorssaint is a menu-bar agent (LSUIElement), so it is rarely the active
+    // Macxel is a menu-bar agent (LSUIElement), so it is rarely the active
     // app. SecurityAgent attaches its password dialog to the requesting process;
     // when that process is an inactive agent the dialog can open behind the
     // frontmost app and read as "no prompt appeared". Bringing the app forward
@@ -124,19 +124,18 @@ enum AdminShell {
 /// toggle without asking for the administrator password every time.
 /// The password is asked once, when installing (or removing) the rule.
 enum Sudoers {
-    static let rulePath = "/etc/sudoers.d/vorssaint-clamshell"
+    static let rulePath = "/etc/sudoers.d/macxel-clamshell"
     // Rule files written under earlier names; removed whenever the rule is
     // (re)installed or removed, so the closed-lid permission migrates without an
     // extra password prompt.
-    private static let legacyRulePaths = [
-        "/etc/sudoers.d/vorssaint-utils-clamshell",
-        "/etc/sudoers.d/vorss-clamshell",
-    ]
+    // FORK-SECURITY: upstream's rule files belong to the official app; Macxel
+    // never removes them.
+    private static let legacyRulePaths: [String] = []
 
     /// Serializes native writes and read/reapply probes. Authorization runs
     /// separately with probes suspended, so a probe cannot resurrect a stale
     /// "1" after a restore cleared it and leave lid sleep off without a marker.
-    private static let sleepStateQueue = DispatchQueue(label: "com.vorssaint.utils.pmset-state")
+    private static let sleepStateQueue = DispatchQueue(label: "com.oleksandrtretiak.macxel.pmset-state")
     // Authorization runs outside this queue so quitting never waits for a
     // password prompt. Probes must not reapply a stale state during that off.
     private static var sleepStateProbeSuspensions = 0
@@ -169,11 +168,11 @@ enum Sudoers {
         let rule = SudoersSupport.clamshellRule(uid: getuid())
         // Clear any earlier-named rule first, then write and validate the new one
         // (a failed check rolls back). Same password prompt either way.
-        let legacy = legacyRulePaths.joined(separator: " ")
+        let removeLegacy = legacyRulePaths.isEmpty ? "" : "rm -f \(legacyRulePaths.joined(separator: " ")) && "
         // FORK-SECURITY: validate a temp file first (sudo skips names with a
         // dot) and only then move it into place, so sudo never reads an
         // unchecked rule.
-        let command = "mkdir -p /etc/sudoers.d && chmod 0755 /etc/sudoers.d && rm -f \(legacy) && T=$(mktemp \(rulePath).tmp.XXXXXX) && echo '\(rule)' > \"$T\" && chmod 0440 \"$T\" && /usr/sbin/visudo -c -f \"$T\" && mv -f \"$T\" \(rulePath) || { rm -f \"$T\"; exit 1; }"
+        let command = "mkdir -p /etc/sudoers.d && chmod 0755 /etc/sudoers.d && \(removeLegacy)T=$(mktemp \(rulePath).tmp.XXXXXX) && echo '\(rule)' > \"$T\" && chmod 0440 \"$T\" && /usr/sbin/visudo -c -f \"$T\" && mv -f \"$T\" \(rulePath) || { rm -f \"$T\"; exit 1; }"
         AdminShell.run(command, prompt: L10n.shared.s.adminPromptSudoersInstall) { ok in
             completion(ok && isConfigured())
         }

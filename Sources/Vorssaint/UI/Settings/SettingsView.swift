@@ -990,7 +990,7 @@ struct SupportSettings: View {
                             .fixedSize(horizontal: false, vertical: true)
 
                         Button {
-                            openURL(AppInfo.repositoryURL)
+                            openURL(AppInfo.upstreamRepositoryURL)
                         } label: {
                             Label(l10n.s.supportIntroStarButton, systemImage: "star.fill")
                         }

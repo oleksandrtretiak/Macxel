@@ -155,7 +155,7 @@ enum FanControlResumeContract {
         static let appService = Registration()
         static var shared = Service()
         static var helperVersion = "bundled"
-        static let log = Logger(subsystem: "com.vorssaint.tests", category: "FanControlResume")
+        static let log = Logger(subsystem: "com.oleksandrtretiak.macxel.tests", category: "FanControlResume")
         var accessState = AccessState.enabled
         var snapshot = FanControlSnapshot.empty
         var error: FanControlErrorCode?
