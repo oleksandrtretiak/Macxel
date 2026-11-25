@@ -163,6 +163,11 @@ final class FanControlService: ObservableObject {
         case .unavailable:
             error = .helperUnavailable
         case .notRegistered:
+            // FORK-SECURITY: never install the root fan-control daemon in this fork.
+            guard ForkSecurity.fanControlEnabled else {
+                error = .helperUnavailable
+                return
+            }
             isWorking = true
             do {
                 try Self.appService.register()
@@ -424,7 +429,8 @@ final class FanControlService: ObservableObject {
     /// macOS may require approval again even when registration succeeds.
     static func restoreRegistrationAfterFailedRemoval() -> Bool {
         let service = appService
-        if service.status == .notRegistered || service.status == .notFound {
+        if ForkSecurity.fanControlEnabled,
+           service.status == .notRegistered || service.status == .notFound {
             try? service.register()
         }
         let status = service.status
@@ -813,7 +819,8 @@ final class FanControlService: ObservableObject {
     /// when the running daemon can reserve itself against another client's Apply.
     private func replaceRegistrationIfNeeded(after response: FanControlResponse) {
         let current = Self.helperVersion
-        guard panelIsVisible, Self.helperAwaitsRegistration, registrationAttemptedVersion != current,
+        guard ForkSecurity.fanControlEnabled, panelIsVisible, Self.helperAwaitsRegistration,
+              registrationAttemptedVersion != current,
               response.supportsUnregisterPreparation == true, !response.snapshot.isCooling,
               !UserDefaults.standard.bool(forKey: DefaultsKey.fanControlRecoveryNeeded) else { return }
         prepareForUnregister { reserved in

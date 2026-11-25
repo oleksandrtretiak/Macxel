@@ -272,8 +272,22 @@ enum SettingsBackupSupport {
         else { return nil }
         let allowed = exportKeys()
         let filtered = settings.filter { allowed.contains($0.key) && valueLooksRight($0.key, $0.value) }
-        return portableNotchDisplay(portableThumbnailPauseLists(portableWindowLayoutIgnoredApps(
-            portableMouseExceptions(portableMediaSettings(filtered)))))
+        return withoutScriptLinks(portableNotchDisplay(portableThumbnailPauseLists(portableWindowLayoutIgnoredApps(
+            portableMouseExceptions(portableMediaSettings(filtered))))))
+    }
+
+    /// FORK-SECURITY: a shared settings file must not plant a Command Bar
+    /// shortcut that runs a local executable; script shortcuts are made by hand.
+    static func withoutScriptLinks(_ settings: [String: Any]) -> [String: Any] {
+        guard let value = settings[DefaultsKey.commandBarLinks] else { return settings }
+        var result = settings
+        if let data = value as? Data {
+            result[DefaultsKey.commandBarLinks] = CommandBarLinks.encode(
+                CommandBarLinks.decode(data).filter { $0.kind != .script })
+        } else {
+            result[DefaultsKey.commandBarLinks] = nil
+        }
+        return result
     }
 
     /// 3.4.1 and earlier play a saved app volume as the gain itself. A backup

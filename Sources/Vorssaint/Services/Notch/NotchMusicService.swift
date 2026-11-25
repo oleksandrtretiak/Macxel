@@ -123,6 +123,8 @@ final class NotchMusicService: ObservableObject {
         let requested = UUID()
         generation = requested
         process.executableURL = URL(fileURLWithPath: "/usr/bin/perl")
+        // FORK-SECURITY: PERL5OPT/PERL5LIB from `launchctl setenv` must not run code under this app's permissions.
+        process.environment = ["PATH": "/usr/bin:/bin"]
         process.arguments = arguments + [includeOtherPlayers ? "watch_all" : "watch"]
         process.standardOutput = output
         process.standardError = FileHandle.nullDevice

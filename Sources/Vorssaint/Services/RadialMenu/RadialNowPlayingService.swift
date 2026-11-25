@@ -360,7 +360,9 @@ private final class MediaRemoteNowPlayingBridge {
         queue.async {
             let result = BoundedProcessRunner.run("/usr/bin/perl", [script.path, library.path],
                                                   timeout: Self.replyTimeout,
-                                                  maxOutputBytes: RadialNowPlayingSupport.maximumAdapterReplyBytes)
+                                                  maxOutputBytes: RadialNowPlayingSupport.maximumAdapterReplyBytes,
+                                                  // FORK-SECURITY: no inherited PERL5OPT/PERL5LIB.
+                                                  environment: ["PATH": "/usr/bin:/bin"])
             guard result.status == 0, !result.timedOut,
                   let reply = RadialNowPlayingSupport.adapterReply(from: result.output) else {
                 completion(nil)

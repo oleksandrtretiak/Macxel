@@ -798,14 +798,18 @@ enum FinderBridge {
         tell application "Finder"
             set out to ""
             repeat with f in (get selection)
-                set out to out & (POSIX path of (f as alias)) & linefeed
+                set p to POSIX path of (f as alias)
+                if p contains linefeed or p contains return then error number -1700
+                set out to out & p & linefeed
             end repeat
             return out
         end tell
         """
         let result = AppleScriptRunner.run(script)
         guard result.ok else { return [] }
-        return result.output.split(whereSeparator: \.isNewline)
+        // FORK-SECURITY: a file name with a line break in it must not turn into
+        // two paths; such a selection fails above, and only "\n" separates here.
+        return result.output.split(separator: "\n")
             .map { URL(fileURLWithPath: String($0)) }
     }
 

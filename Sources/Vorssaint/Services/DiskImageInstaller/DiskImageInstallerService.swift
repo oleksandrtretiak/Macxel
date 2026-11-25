@@ -456,10 +456,8 @@ final class DiskImageInstallerService {
         let signature = run("/usr/bin/codesign",
                             arguments: ["--verify", "--deep", "--strict", appURL.path])
         guard signature.status == 0 else { return false }
-        let status = run("/usr/sbin/spctl", arguments: ["--status"])
-        if String(data: status.output, encoding: .utf8)?.localizedCaseInsensitiveContains("disabled") == true {
-            return true
-        }
+        // FORK-SECURITY: the copy drops quarantine, so a disabled Gatekeeper is
+        // no reason to accept an app it never assessed; spctl then refuses it.
         return run("/usr/sbin/spctl", arguments: ["-a", "-t", "exec", appURL.path]).status == 0
     }
 

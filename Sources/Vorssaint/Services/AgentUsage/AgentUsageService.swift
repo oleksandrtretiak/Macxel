@@ -885,7 +885,9 @@ final class AgentUsageService: ObservableObject {
         let profile = claudeProfile
         claudeAccountQueue.async { [weak self] in
             let result: Result<AgentClaudeServer.Summary, AgentClaudeServer.Failure>
-            if let executable = AgentClaudeServer.executable(home: home, searchPath: ProcessInfo.processInfo.environment["PATH"]) {
+            // FORK-SECURITY: no unchecked `claude` binary from user-writable paths.
+            if ForkSecurity.agentCLIProbesEnabled,
+               let executable = AgentClaudeServer.executable(home: home, searchPath: ProcessInfo.processInfo.environment["PATH"]) {
                 var environment = AgentCodexServer.environment(for: executable, searchPath: nil)
                 environment["PATH"] = AgentClaudeServer.searchPath(after: environment["PATH"] ?? "", home: home)
                 result = request.run(executable, home: home, environment: environment, profile: profile)

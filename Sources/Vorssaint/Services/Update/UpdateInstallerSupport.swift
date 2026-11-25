@@ -54,14 +54,33 @@ enum UpdateInstallerSupport {
             fi
             /bin/mv -f "$RESULT.progress" "$RESULT" 2>/dev/null
         }
-        cleanup_script() { case "$SCRIPT" in /*) /bin/rm -f "$SCRIPT";; esac; }
+        cleanup_script() {
+            [ -n "$PRIVATE_DIR" ] && /bin/rm -rf "$PRIVATE_DIR"
+            case "$SCRIPT" in /*) /bin/rm -f "$SCRIPT";; esac
+        }
         relaunch() {
-            if [ -n "$ASUSER" ] && [ "$(/usr/bin/id -u)" = "0" ]; then
-                /bin/launchctl asuser "$ASUSER" /usr/bin/open "$1" && return
+            # FORK-SECURITY: root never runs `open` itself, not even as a fallback.
+            if running_as_root; then
+                [ -n "$ASUSER" ] || return 1
+                /bin/launchctl asuser "$ASUSER" /usr/bin/sudo -n -u "#$ASUSER" /usr/bin/open "$1"
+                return
             fi
             /usr/bin/open "$1"
         }
         while kill -0 "$PID" 2>/dev/null; do sleep 0.3; done
+        # FORK-SECURITY: the DMG sits in the user's own temp folder, where any
+        # process of that user could swap it between the signature check and
+        # the mount. As root, verify and mount a private copy instead.
+        if running_as_root; then
+            ORIGINAL_DMG="$DMG"
+            PRIVATE_DIR="$(/usr/bin/mktemp -d /private/var/root/vorssaint-update.XXXXXX)" \
+                && /bin/chmod 700 "$PRIVATE_DIR" \
+                && [ -f "$ORIGINAL_DMG" ] && [ ! -L "$ORIGINAL_DMG" ] \
+                && /bin/cp -X "$ORIGINAL_DMG" "$PRIVATE_DIR/update.dmg" \
+                || { finalize; relaunch "$APP"; cleanup_script; exit 1; }
+            DMG="$PRIVATE_DIR/update.dmg"
+            [ -n "$ASUSER" ] && /usr/bin/sudo -n -u "#$ASUSER" /bin/rm -f "$ORIGINAL_DMG" 2>/dev/null
+        fi
         note fail-dmg-verify
         DMG_VERIFY_REQ='anchor apple generic and certificate leaf[subject.OU] = "3D485NHW29"'
         if ! /usr/bin/codesign -v --strict -R="$DMG_VERIFY_REQ" "$DMG" 2>/dev/null; then
@@ -74,7 +93,7 @@ enum UpdateInstallerSupport {
         note fail-tempdir
         MNT="$(/usr/bin/mktemp -d)" || { /bin/rm -f "$DMG"; finalize; relaunch "$APP"; cleanup_script; exit 1; }
         note fail-mount
-        if ! /usr/bin/hdiutil attach "$DMG" -nobrowse -quiet -mountpoint "$MNT"; then
+        if ! /usr/bin/hdiutil attach "$DMG" -readonly -nobrowse -quiet -mountpoint "$MNT"; then
             /bin/rmdir "$MNT" 2>/dev/null
             /bin/rm -f "$DMG"
             finalize

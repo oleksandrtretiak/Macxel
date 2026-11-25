@@ -141,7 +141,9 @@ final class AgentCodexResetService: ObservableObject {
     }
 
     private static func executable(apps: [URL], searchPath: String?) -> URL? {
-        AgentCodexServer.executable(apps: apps, home: FileManager.default.homeDirectoryForCurrentUser,
-                                    searchPath: searchPath)
+        // FORK-SECURITY: the probe would run a binary from user-writable paths without a signature check.
+        guard ForkSecurity.agentCLIProbesEnabled else { return nil }
+        return AgentCodexServer.executable(apps: apps, home: FileManager.default.homeDirectoryForCurrentUser,
+                                           searchPath: searchPath)
     }
 }

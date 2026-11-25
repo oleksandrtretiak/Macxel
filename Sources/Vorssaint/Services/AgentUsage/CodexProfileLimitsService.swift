@@ -215,7 +215,9 @@ final class CodexProfileLimitsService: ObservableObject {
 
     private static func reader(apps: [URL]) -> Reader {
         { profile, searchPath, cancellation in
-            guard let executable = AgentCodexServer.executable(apps: apps, home: FileManager.default.homeDirectoryForCurrentUser,
+            // FORK-SECURITY: no unchecked `codex` binary from user-writable paths.
+            guard ForkSecurity.agentCLIProbesEnabled,
+                  let executable = AgentCodexServer.executable(apps: apps, home: FileManager.default.homeDirectoryForCurrentUser,
                                                                searchPath: searchPath) else { return .failure(.missingCLI) }
             return CodexAccountUsageReader.read(profile, executable: executable, searchPath: searchPath,
                                                 cancellation: cancellation)

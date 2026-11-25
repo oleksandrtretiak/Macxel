@@ -70,9 +70,12 @@ enum DetachedProcess {
     ///
     /// `quotedArgv` is the program and its arguments, already quoted for sh.
     static func detachedShellCommand(quotedArgv: String) -> String {
-        let setsid = "/usr/bin/perl -e 'use POSIX (); "
+        // FORK-SECURITY: this runs as root; PERL5OPT/PERL5LIB or anything else
+        // set with `launchctl setenv` must not reach it.
+        let cleanEnvironment = "/usr/bin/env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin"
+        let setsid = "\(cleanEnvironment) /usr/bin/perl -e 'use POSIX (); "
             + "POSIX::setsid(); $SIG{HUP} = \"IGNORE\"; exec @ARGV; exit 127'"
         return "set -- \(quotedArgv); { if [ -x /usr/bin/perl ]; then exec \(setsid) \"$@\"; "
-            + "else exec /usr/bin/nohup \"$@\"; fi; } >/dev/null 2>&1 &"
+            + "else exec \(cleanEnvironment) /usr/bin/nohup \"$@\"; fi; } >/dev/null 2>&1 &"
     }
 }

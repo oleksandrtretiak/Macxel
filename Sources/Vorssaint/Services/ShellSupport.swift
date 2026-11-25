@@ -170,7 +170,10 @@ enum Sudoers {
         // Clear any earlier-named rule first, then write and validate the new one
         // (a failed check rolls back). Same password prompt either way.
         let legacy = legacyRulePaths.joined(separator: " ")
-        let command = "mkdir -p /etc/sudoers.d && chmod 0755 /etc/sudoers.d && rm -f \(legacy) && echo '\(rule)' > \(rulePath) && chmod 0440 \(rulePath) && /usr/sbin/visudo -c -f \(rulePath) || { rm -f \(rulePath); exit 1; }"
+        // FORK-SECURITY: validate a temp file first (sudo skips names with a
+        // dot) and only then move it into place, so sudo never reads an
+        // unchecked rule.
+        let command = "mkdir -p /etc/sudoers.d && chmod 0755 /etc/sudoers.d && rm -f \(legacy) && T=$(mktemp \(rulePath).tmp.XXXXXX) && echo '\(rule)' > \"$T\" && chmod 0440 \"$T\" && /usr/sbin/visudo -c -f \"$T\" && mv -f \"$T\" \(rulePath) || { rm -f \"$T\"; exit 1; }"
         AdminShell.run(command, prompt: L10n.shared.s.adminPromptSudoersInstall) { ok in
             completion(ok && isConfigured())
         }

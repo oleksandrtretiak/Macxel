@@ -1165,6 +1165,8 @@ enum ScreenshotLastCaptureStore {
                     at: fileURL.deletingLastPathComponent(),
                     withIntermediateDirectories: true)
                 try data.write(to: fileURL, options: .atomic)
+                // FORK-SECURITY: same 0600 as every other capture this app keeps.
+                try? FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: fileURL.path)
                 guard isCurrent(operation) else {
                     try? FileManager.default.removeItem(at: fileURL)
                     return

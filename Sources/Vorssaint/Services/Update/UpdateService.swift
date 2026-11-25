@@ -62,6 +62,8 @@ final class UpdateService: ObservableObject {
     /// Called at launch: checks shortly after start and then daily, if enabled.
     func startAutomaticChecks() {
         consumeInstallResult()
+        // FORK-SECURITY: self-update targets the upstream repository and its Team ID.
+        guard ForkSecurity.selfUpdateEnabled else { return }
         if AppInfo.isBeta && UserDefaults.standard.object(forKey: DefaultsKey.includeBetaUpdates) == nil {
             UserDefaults.standard.set(true, forKey: DefaultsKey.includeBetaUpdates)
         }
@@ -86,7 +88,7 @@ final class UpdateService: ObservableObject {
     private func configureAutomaticChecks() {
         refreshTimer?.invalidate()
         refreshTimer = nil
-        guard autoCheckEnabled else { return }
+        guard autoCheckEnabled, ForkSecurity.selfUpdateEnabled else { return }
         // Hourly (was daily). Combined with the activate / panel-open checks, a new
         // release surfaces within the hour instead of up to a day later.
         let timer = Timer(timeInterval: 60 * 60, repeats: true) { [weak self] _ in
@@ -110,6 +112,13 @@ final class UpdateService: ObservableObject {
                 state = .upToDate
                 availableNotes = nil
             }
+            lastChecked = Date()
+            return
+        }
+        // FORK-SECURITY: self-update is off in this fork.
+        guard ForkSecurity.selfUpdateEnabled else {
+            availableNotes = nil
+            state = manual ? .failed("Self-update is disabled in this build") : .idle
             lastChecked = Date()
             return
         }
@@ -158,7 +167,8 @@ final class UpdateService: ObservableObject {
                         tagName: rel.tagName,
                         isPrerelease: rel.prerelease ?? false,
                         isDraft: rel.draft ?? false,
-                        dmgURL: asset?.browserDownloadURL,
+                        dmgURL: UpdateServiceSupport.isTrustedReleaseAssetURL(asset?.browserDownloadURL)
+                            ? asset?.browserDownloadURL : nil,
                         dmgExpectedBytes: asset?.size,
                         body: rel.body
                     )
@@ -194,6 +204,7 @@ final class UpdateService: ObservableObject {
     /// API. The hourly timer is the floor; this makes it feel immediate.
     func checkIfStale(maxAge: TimeInterval = 15 * 60) {
         if AppInfo.isDeveloperBuild { return }
+        guard ForkSecurity.selfUpdateEnabled else { return }
         guard autoCheckEnabled else { return }
         switch state {
         case .checking, .downloading, .installing: return
@@ -207,6 +218,7 @@ final class UpdateService: ObservableObject {
 
     func downloadAndInstall() {
         if AppInfo.isDeveloperBuild { return }  // never replace the local dev build over itself
+        guard ForkSecurity.selfUpdateEnabled else { return }
         guard let downloadURL else { return }
         // Pre-flight BEFORE spending the download: a translocated app or one
         // running from a read-only volume (the mounted DMG) can never be
@@ -327,9 +339,11 @@ final class UpdateService: ObservableObject {
         try? fm.removeItem(at: resultURL.appendingPathExtension("progress"))
 
         let appDirectory = (appPath as NSString).deletingLastPathComponent
-        let lastFailure = UserDefaults.standard.string(forKey: DefaultsKey.updateLastInstallFailure)
-        if fm.isWritableFile(atPath: appDirectory),
-           !UpdateInstallerSupport.shouldForceAdminInstall(afterFailureCode: lastFailure) {
+        // FORK-SECURITY: the elevated path is chosen only by real write access.
+        // The remembered failure code lives in user-writable defaults and a
+        // user-writable marker, so other software could use it to send an
+        // admin into a root install inside a folder that user can write.
+        if fm.isWritableFile(atPath: appDirectory) {
             launchUserInstaller(appPath: appPath, dmgPath: dmgPath, pid: pid,
                                 resultPath: resultURL.path, expectedVersion: expectedVersion)
         } else {

@@ -127,11 +127,16 @@ enum UpdateServiceSupport {
     /// Returns true if `candidate` is a higher semantic version than `current`.
     static func isNewer(_ candidate: String, than current: String) -> Bool {
         guard let candidateVersion = SemanticVersion(raw: candidate) else { return false }
-        guard let currentVersion = SemanticVersion(raw: current) else {
-            // If current is invalid or dev string, consider candidate newer if candidate is valid
-            return true
-        }
+        // FORK-SECURITY: an unreadable current version never counts as older.
+        guard let currentVersion = SemanticVersion(raw: current) else { return false }
         return candidateVersion > currentVersion
+    }
+
+    /// FORK-SECURITY: release assets are only ever downloaded over https from
+    /// GitHub itself; the signature check stays the real gate.
+    static func isTrustedReleaseAssetURL(_ url: URL?) -> Bool {
+        guard let url, url.scheme == "https", url.user == nil, url.password == nil else { return false }
+        return url.host?.lowercased() == "github.com"
     }
 
     // MARK: - Release Candidate Selection

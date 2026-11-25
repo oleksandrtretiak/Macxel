@@ -85,6 +85,8 @@ final class TransientPaste {
                 }
                 return
             }
+            // FORK-SECURITY: tell other clipboard managers not to record this temporary paste.
+            pasteboard.setData(Data(), forType: NSPasteboard.PasteboardType("org.nspasteboard.TransientType"))
             let changeCount = pasteboard.changeCount
 
             DispatchQueue.main.async {
